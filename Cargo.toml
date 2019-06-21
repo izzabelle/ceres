@@ -1,0 +1,9 @@
+[package]
+name = "ceres"
+version = "0.1.0"
+authors = ["Izzy <me@izzabelle.dev>"]
+edition = "2018"
+
+[dependencies]
+byteorder = "1.3.2"
+logos = "0.9.7"
