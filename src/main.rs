@@ -1,3 +1,4 @@
 fn main() {
-    println!("Hello, world!");
+    let sys = ceres::System::init();
+    println!("{}", sys.registers);
 }

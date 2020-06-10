@@ -1,7 +1,16 @@
-pub mod cpu;
+mod memory;
+mod registers;
 
-use cpu::Cpu;
+pub use memory::Memory;
+pub use registers::Registers;
 
 pub struct System {
-    cpu: Cpu,
+    pub registers: Registers,
+    pub memory: Memory,
+}
+
+impl System {
+    pub fn init() -> System {
+        System { registers: Registers::init(), memory: Memory::init() }
+    }
 }
