@@ -30,25 +30,25 @@ pub struct Registers {
 }
 
 impl Registers {
-    /// initializes cpu with 0x00 in all registers
+    /// initializes cpu with 0x0000 in all registers
     pub fn init() -> Registers {
         Registers {
-            z0: 0x00,
-            gp: 0x00,
-            sp: 0x00,
-            ra: 0x00,
-            a0: 0x00,
-            a1: 0x00,
-            a2: 0x00,
-            v0: 0x00,
-            v1: 0x00,
-            t0: 0x00,
-            t1: 0x00,
-            t2: 0x00,
-            t3: 0x00,
-            t4: 0x00,
-            t5: 0x00,
-            t6: 0x00,
+            z0: 0x0000,
+            gp: 0x0000,
+            sp: 0x0000,
+            ra: 0x0000,
+            a0: 0x0000,
+            a1: 0x0000,
+            a2: 0x0000,
+            v0: 0x0000,
+            v1: 0x0000,
+            t0: 0x0000,
+            t1: 0x0000,
+            t2: 0x0000,
+            t3: 0x0000,
+            t4: 0x0000,
+            t5: 0x0000,
+            t6: 0x0000,
         }
     }
 }
@@ -109,11 +109,30 @@ impl std::ops::IndexMut<usize> for Registers {
 
 impl fmt::Display for Registers {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        write!(f, "-- registers ----------------------------------------------------------------------------\n\
-| z0: 0x{:02X} | gp: 0x{:02X} | sp: 0x{:02X} | ra: 0x{:02X} | a0: 0x{:02X} | a1: 0x{:02X} | a2: 0x{:02X} | v0: 0x{:02X} |\n\
-| v1: 0x{:02X} | t0: 0x{:02X} | t1: 0x{:02X} | t2: 0x{:02X} | t3: 0x{:02X} | t4: 0x{:02X} | t5: 0x{:02X} | t6: 0x{:02X} |\n\
------------------------------------------------------------------------------------------",
-                 self[0], self[1], self[2], self[3], self[4], self[5], self[6], self[7],
-                 self[8], self[9], self[10], self[11], self[12], self[13], self[14], self[15])
+        write!(
+            f,
+            "-- registers ----------------------------------------\n\
+| z0: 0x{:04X} | gp: 0x{:04X} | sp: 0x{:04X} | ra: 0x{:04X} |\n\
+| a0: 0x{:04X} | a1: 0x{:04X} | a2: 0x{:04X} | v0: 0x{:04X} |\n\
+| v1: 0x{:04X} | t0: 0x{:04X} | t1: 0x{:04X} | t2: 0x{:04X} |\n\
+| t3: 0x{:04X} | t4: 0x{:04X} | t5: 0x{:04X} | t6: 0x{:04X} |\n\
+-----------------------------------------------------",
+            self[0],
+            self[1],
+            self[2],
+            self[3],
+            self[4],
+            self[5],
+            self[6],
+            self[7],
+            self[8],
+            self[9],
+            self[10],
+            self[11],
+            self[12],
+            self[13],
+            self[14],
+            self[15]
+        )
     }
 }

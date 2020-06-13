@@ -6,4 +6,6 @@ edition = "2018"
 
 [dependencies]
 logos = "0.9.7"
-offbrand = { git = "https://github.com/izzabelle/offbrand" }
+#offbrand = { git = "https://github.com/izzabelle/offbrand" }
+offbrand = { path = "../offbrand" }
+structopt = "0.3.14"

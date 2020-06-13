@@ -3,7 +3,7 @@ a shitty fantasy console written in rust using a proprietary MIPS based asm inst
 
 ### GRAPHICS
 
-uhhhhh funny 128x72 screen
+uhhhhh funny 256x144 screen
 
 ### Register layout and info
 
@@ -20,3 +20,6 @@ all registers are unsigned 16 bit
 | 8               | v1            | return register 2    |
 | 9-15            | t0-t6         | temporary registers  |
 
+### Memory map and info
+
+god oh fuck what am i even doing
