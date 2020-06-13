@@ -1,6 +1,6 @@
 /// all the memory as one big fat fucking slice
 pub struct Memory {
-    pub data: [u16; std::u16::MAX as usize],
+    data: [u16; std::u16::MAX as usize],
 }
 
 impl Memory {
