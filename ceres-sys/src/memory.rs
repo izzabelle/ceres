@@ -4,6 +4,7 @@ pub struct Memory {
 }
 
 impl Memory {
+    /// initialize the main memory buffer
     pub fn init() -> Memory {
         Memory { data: [0x00; std::u16::MAX as usize] }
     }

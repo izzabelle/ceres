@@ -1,9 +1,11 @@
-# Ceres 
-a shitty fantasy console written in rust using a proprietary MIPS based asm instruction set. a bit of inspiration from PICO-8
+# CERES-16
+a shitty fantasy console written in rust using a proprietary MIPS based asm instruction set. a lot of inspiration from PICO-8. ceres is structured of these crates: 
 
-### GRAPHICS
+- ceres-sys: the core system structure of ceres-16
 
-uhhhhh funny 256x144 screen
+### Graphics
+
+ceres uses a 256x144 screen with a separate video buffer from the standard memory. colors are 16-bit structured like `0b0000_rrrr_gggg_bbbb` where the first four bits are ignored. the video buffer is structured row major where each u16 is an individual pixel
 
 ### Register layout and info
 

@@ -1,8 +1,10 @@
+/// video memory
 pub struct VideoMemory {
     data: [u16; crate::VIDEO_MEMORY_LEN],
 }
 
 impl VideoMemory {
+    /// initialize the video memory
     pub fn init() -> VideoMemory {
         VideoMemory { data: [0x0000; crate::VIDEO_MEMORY_LEN] }
     }

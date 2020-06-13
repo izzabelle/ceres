@@ -12,5 +12,5 @@ ceres-sys = { path = "ceres-sys" }
 
 [workspace]
 members = [
-    "ceres-sys"
+    "ceres-sys",
 ]
