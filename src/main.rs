@@ -12,11 +12,11 @@ struct Opt {
 fn wrapper() -> Result<()> {
     let opt = Opt::from_args();
     let mut ctx = offbrand::Context::new(
-        ceres::SCREEN_WIDTH * opt.scale_factor,
-        ceres::SCREEN_HEIGHT * opt.scale_factor,
+        ceres_sys::SCREEN_WIDTH * opt.scale_factor,
+        ceres_sys::SCREEN_HEIGHT * opt.scale_factor,
         "CERES-16".to_owned(),
     )?;
-    let sys = ceres::System::init();
+    let sys = ceres_sys::System::init();
     println!("{}", sys.registers);
 
     while ctx.is_open() {
