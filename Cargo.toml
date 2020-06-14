@@ -9,8 +9,10 @@ edition = "2018"
 offbrand = { path = "../offbrand" }
 structopt = "0.3.14"
 ceres-sys = { path = "ceres-sys" }
+ceres-asm = { path = "ceres-asm" }
 
 [workspace]
 members = [
     "ceres-sys",
+    "ceres-asm",
 ]
