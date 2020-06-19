@@ -1,3 +1,5 @@
-; this is a comment
-store $t0 pram:0x5a5a
-load 
+; a simple test application
+main:
+    load $t0 0xcccc
+    load $t1 0xaaaa
+    sub $t0 $t1 $t3
