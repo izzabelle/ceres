@@ -14,8 +14,8 @@ all registers are unsigned 16 bit
 | Register number | Register name | Register usage       |
 | --------------- | ------------- | -------------------- |
 | 0               | z0            | always contains zero |
-| 1               | gp            | global pointer       |
-| 2               | gp            | stack pointer        |
+| 1               | pc            | program counter      |
+| 2               | sp            | stack pointer        |
 | 3               | ra            | return address       |
 | 4-6             | a0-a2         | argument registers   |
 | 7               | v0            | return register      |

@@ -6,7 +6,7 @@ pub struct Registers {
     z0: u16,
 
     // system registers
-    gp: u16,
+    pc: u16,
     sp: u16,
     ra: u16,
 
@@ -34,7 +34,7 @@ impl Registers {
     pub fn init() -> Registers {
         Registers {
             z0: 0x0000,
-            gp: 0x0000,
+            pc: 0x0000,
             sp: 0x0000,
             ra: 0x0000,
             a0: 0x0000,
@@ -61,7 +61,7 @@ impl std::ops::Index<usize> for Registers {
     fn index(&self, idx: usize) -> &u16 {
         match idx {
             0 => &self.z0,
-            1 => &self.gp,
+            1 => &self.pc,
             2 => &self.sp,
             3 => &self.ra,
             4 => &self.a0,
@@ -87,7 +87,7 @@ impl std::ops::IndexMut<usize> for Registers {
     fn index_mut(&mut self, idx: usize) -> &mut u16 {
         match idx {
             0 => &mut self.z0,
-            1 => &mut self.gp,
+            1 => &mut self.pc,
             2 => &mut self.sp,
             3 => &mut self.ra,
             4 => &mut self.a0,
@@ -112,7 +112,7 @@ impl fmt::Display for Registers {
         write!(
             f,
             "-- registers ----------------------------------------\n\
-| z0: 0x{:04X} | gp: 0x{:04X} | sp: 0x{:04X} | ra: 0x{:04X} |\n\
+| z0: 0x{:04X} | pc: 0x{:04X} | sp: 0x{:04X} | ra: 0x{:04X} |\n\
 | a0: 0x{:04X} | a1: 0x{:04X} | a2: 0x{:04X} | v0: 0x{:04X} |\n\
 | v1: 0x{:04X} | t0: 0x{:04X} | t1: 0x{:04X} | t2: 0x{:04X} |\n\
 | t3: 0x{:04X} | t4: 0x{:04X} | t5: 0x{:04X} | t6: 0x{:04X} |\n\
