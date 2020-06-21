@@ -44,7 +44,7 @@ impl<'a> Assembler<'a> {
                 // cases that like, actually make sense to process
                 Token::Load => {
                     if let Some(new_token) = self.lexer.next() {
-                        let signifier = Signifier::from_token(new_token)?;
+                        let signifier = Signifier::from_token(&new_token)?;
                         machine_code.push(self.load(signifier)?);
                     } else {
                         return Err(CeresAsmError::NoToken);
@@ -58,12 +58,26 @@ impl<'a> Assembler<'a> {
         Ok(machine_code)
     }
 
+    // wrapping for lexer.next() with changing to result
+    fn next(&mut self) -> Result<Token> {
+        if let Some(token) = self.lexer.next() {
+            Ok(token)
+        } else {
+            Err(CeresAsmError::NoToken)
+        }
+    }
+
     // load instruction assembly
     fn load(&mut self, signifier: Signifier) -> Result<u32> {
-        let opcode: u32 = 0b00001;
-        let signifier: u32 = signifier.as_bits() as u32;
-        let instruction: u32 = (opcode << 27) | (signifier << 24);
-        Ok(instruction)
+        let opcode = 0b00001 as u32;
+        let signifier = signifier.as_bits() as u32;
+
+        let token = self.next()?;
+        let register = token.register_index()? as u32;
+
+        let token = self.next()?;
+        let literal = token.literal()? as u32;
+        Ok((opcode << 27) | (signifier << 24) | (register << 20) | (0b0000u32 << 16) | literal)
     }
 }
 
@@ -74,12 +88,12 @@ enum Signifier {
 }
 
 impl Signifier {
-    fn from_token(token: Token) -> Result<Self> {
+    fn from_token(token: &Token) -> Result<Self> {
         match token {
             Token::VideoMemory => Ok(Self::VideoMemory),
             Token::CartMemory => Ok(Self::CartMemory),
             Token::Immediate => Ok(Self::Immediate),
-            _ => Err(CeresAsmError::LazyBadToken { token }),
+            _ => Err(CeresAsmError::LazyBadToken { token: token.clone() }),
         }
     }
 
@@ -94,7 +108,7 @@ impl Signifier {
 }
 
 /// token
-#[derive(Logos, Debug, PartialEq)]
+#[derive(Logos, Debug, PartialEq, Clone, Copy)]
 pub enum Token {
     // general stuff
     #[regex(";.+")]
@@ -186,37 +200,31 @@ impl Token {
         }
     }
 
-    // returns true if given token is a register
-    fn is_register(&self) -> bool {
+    // returns the index of a register
+    fn register_index(&self) -> Result<u8> {
         match self {
-            Self::ZeroRegister
-            | Self::ProgramCounter
-            | Self::StackPointer
-            | Self::ReturnAddress
-            | Self::ArgumentZero
-            | Self::ArgumentOne
-            | Self::ArgumentTwo
-            | Self::ReturnZero
-            | Self::ReturnOne
-            | Self::TemporaryRegister(_)
-            | Self::RegisterIndex(_) => true,
-            _ => false,
+            Self::RegisterIndex(index) => Ok(index.clone() as u8),
+            Self::TemporaryRegister(index) => Ok(index.clone() as u8 + 9),
+            Self::ZeroRegister => Ok(0),
+            Self::ProgramCounter => Ok(1),
+            Self::StackPointer => Ok(2),
+            Self::ReturnAddress => Ok(3),
+            Self::ArgumentZero => Ok(4),
+            Self::ArgumentOne => Ok(5),
+            Self::ArgumentTwo => Ok(6),
+            Self::ReturnZero => Ok(7),
+            Self::ReturnOne => Ok(8),
+            _ => return Err(CeresAsmError::LazyBadToken { token: self.clone() }),
         }
     }
 
-    // returns true if given token is a literal
-    fn is_literal(&self) -> bool {
+    // returns literals as a u16
+    fn literal(&self) -> Result<u16> {
         match self {
-            Self::HexLiteral(_) | Self::BinaryLiteral(_) | Self::DecimalLiteral(_) => true,
-            _ => false,
-        }
-    }
-
-    // returns true if it's a valid memory location or immediate
-    fn is_signifier(&self) -> bool {
-        match self {
-            Self::VideoMemory | Self::CartMemory | Self::Immediate => true,
-            _ => false,
+            Self::HexLiteral(val) => Ok(*val),
+            Self::BinaryLiteral(val) => Ok(*val),
+            Self::DecimalLiteral(val) => Ok(*val),
+            _ => Err(CeresAsmError::LazyBadToken { token: self.clone() }),
         }
     }
 }

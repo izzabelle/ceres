@@ -16,6 +16,11 @@ fn wrapper() -> Result<()> {
     // initialize the system
     let _sys = ceres_sys::System::init();
 
+    let data = std::fs::read_to_string("test.asm").unwrap();
+    let mut assembler = ceres_asm::Assembler::new(&data);
+    let asm = assembler.assemble().unwrap();
+    asm.iter().for_each(|instruction| println!("ob{:032b}", instruction));
+
     /*
     // create a new graphics context
     let mut ctx = offbrand::Context::new(
