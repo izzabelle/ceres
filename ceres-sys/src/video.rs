@@ -8,6 +8,16 @@ impl VideoMemory {
     pub fn init() -> VideoMemory {
         VideoMemory { data: [0x0000; crate::VIDEO_MEMORY_LEN] }
     }
+
+    /// an iterator
+    pub fn iter(&self) -> impl Iterator<Item = &u16> {
+        self.data.iter()
+    }
+
+    /// mutable iterator
+    pub fn iter_mut(&mut self) -> impl Iterator<Item = &mut u16> {
+        self.data.iter_mut()
+    }
 }
 
 impl std::ops::Index<u16> for VideoMemory {

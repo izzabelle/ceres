@@ -2,6 +2,7 @@
 a shitty fantasy console written in rust using a proprietary MIPS based asm instruction set. a lot of inspiration from PICO-8. ceres is structured of these crates: 
 
 - ceres-sys: the core system structure of ceres-16
+- ceres-asm: the assembler for ceres-16
 
 ### Graphics
 
@@ -25,3 +26,17 @@ all registers are unsigned 16 bit
 ### Memory map and info
 
 god oh fuck what am i even doing
+
+### instructions
+
+##### load - ld:signifier
+
+can be vram/cram/imed
+
+- immediate `ld:immd $dest immediate`
+
+  | opcode  | signifier | destination | padding | immediate          |
+  | ------- | --------- | ----------- | ------- | ------------------ |
+  | `00001` | `100`     | `0000`      | `0000`  | `0000000000000000` |
+
+  

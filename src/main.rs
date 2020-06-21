@@ -6,12 +6,18 @@ use structopt::StructOpt;
 struct Opt {
     /// times the screen should be scaled by
     #[structopt(short = "s", long = "scale", default_value = "4")]
-    scale_factor: usize,
+    _scale_factor: usize,
 }
 
 fn wrapper() -> Result<()> {
-    let opt = Opt::from_args();
+    // load options
+    let _opt = Opt::from_args();
 
+    // initialize the system
+    let _sys = ceres_sys::System::init();
+
+    /*
+    // create a new graphics context
     let mut ctx = offbrand::Context::new(
         ceres_sys::SCREEN_WIDTH,
         ceres_sys::SCREEN_HEIGHT,
@@ -19,25 +25,12 @@ fn wrapper() -> Result<()> {
         Some(opt.scale_factor),
     )?;
 
-    let mut sys = ceres_sys::System::init();
-
-    let mut colors: Vec<u16> = Vec::new();
-
-    for r in 0x0..0xf {
-        for g in 0x0..0xf {
-            for b in 0x0..0xf {
-                colors.push((r << 8) | (g << 4) | b);
-            }
-        }
-    }
-
-    colors.iter().enumerate().for_each(|(addr, color)| {
-        sys.video_memory[addr as u16] = *color;
-    });
-
+    // loop while the context window is open
     while ctx.is_open() {
+        // clear the context
         ctx.clear(None);
 
+        // print a pixel for ever word in the video memory buffer
         for x in 0..ceres_sys::SCREEN_WIDTH {
             for y in 0..ceres_sys::SCREEN_HEIGHT {
                 let color =
@@ -46,17 +39,12 @@ fn wrapper() -> Result<()> {
             }
         }
 
+        // render the context
         ctx.present()?;
     }
+    */
 
     Ok(())
-}
-
-fn color_from_u16(color: u16) -> Color {
-    let r = (((color >> 8) & 0x000f) as u8) * 17;
-    let g = (((color >> 4) & 0x000f) as u8) * 17;
-    let b = ((color & 0x000f) as u8) * 17;
-    Color { r, g, b }
 }
 
 fn main() {
