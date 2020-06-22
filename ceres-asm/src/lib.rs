@@ -5,6 +5,7 @@
 
 // namespacing
 use logos::{Lexer, Logos};
+use std::{fs::File, io::prelude::*, path::PathBuf};
 
 /// ceres-asm result type
 pub type Result<T> = std::result::Result<T, CeresAsmError>;
@@ -18,6 +19,8 @@ pub enum CeresAsmError {
     LazyBadToken { token: Token },
     #[error("was looking for token, found nothing ???")]
     NoToken,
+    #[error(transparent)]
+    StdIo(#[from] std::io::Error),
 }
 
 /// assembler struct
@@ -33,7 +36,7 @@ impl<'a> Assembler<'a> {
     }
 
     /// assemble
-    pub fn assemble(&mut self) -> Result<Vec<u32>> {
+    pub fn assemble(&mut self) -> Result<MachineCode> {
         let mut machine_code: Vec<u32> = Vec::new();
 
         while let Some(token) = self.lexer.next() {
@@ -42,20 +45,13 @@ impl<'a> Assembler<'a> {
                 Token::Comment => continue,
                 Token::Newline => continue,
                 // cases that like, actually make sense to process
-                Token::Load => {
-                    if let Some(new_token) = self.lexer.next() {
-                        let signifier = Signifier::from_token(&new_token)?;
-                        machine_code.push(self.load(signifier)?);
-                    } else {
-                        return Err(CeresAsmError::NoToken);
-                    }
-                }
+                Token::Load => machine_code.push(self.load()?),
+                Token::Add => machine_code.push(self.add()?),
                 // cases that should straight up not happen
                 _ => return Err(CeresAsmError::LazyBadToken { token }),
             }
         }
-
-        Ok(machine_code)
+        Ok(MachineCode(machine_code))
     }
 
     // wrapping for lexer.next() with changing to result
@@ -68,16 +64,55 @@ impl<'a> Assembler<'a> {
     }
 
     // load instruction assembly
-    fn load(&mut self, signifier: Signifier) -> Result<u32> {
-        let opcode = 0b00001 as u32;
-        let signifier = signifier.as_bits() as u32;
+    fn load(&mut self) -> Result<u32> {
+        let opcode = 0b00001u32;
+
+        let token = self.next()?;
+        let signifier = Signifier::from_token(&token)?.as_bits() as u32;
 
         let token = self.next()?;
         let register = token.register_index()? as u32;
 
         let token = self.next()?;
         let literal = token.literal()? as u32;
-        Ok((opcode << 27) | (signifier << 24) | (register << 20) | (0b0000u32 << 16) | literal)
+        Ok((opcode << 27) | (signifier << 24) | (register << 20) | literal)
+    }
+
+    // add instruction assembly
+    fn add(&mut self) -> Result<u32> {
+        let opcode = 0b00010u32;
+
+        let token = self.next()?;
+        let source_one = token.register_index()? as u32;
+        let token = self.next()?;
+        let source_two = token.register_index()? as u32;
+        let token = self.next()?;
+        let dest = token.register_index()? as u32;
+
+        Ok((opcode << 27) | (source_one << 8) | (source_two << 4) | dest)
+    }
+}
+
+/// assembled machine code
+pub struct MachineCode(pub Vec<u32>);
+
+impl MachineCode {
+    /// write the machine code to a file
+    pub fn write_to_file(&self, dest: Option<PathBuf>) -> Result<()> {
+        let dest = if let Some(path) = dest { path } else { PathBuf::from("out.bin") };
+        let mut file = File::create(dest)?;
+        let data = self.as_u8_vec();
+        file.write_all(&data)?;
+        Ok(())
+    }
+
+    // return the machine code as a vec of u8
+    fn as_u8_vec(&self) -> Vec<u8> {
+        let mut data: Vec<u8> = Vec::new();
+        self.0.iter().for_each(|instruction| {
+            data.extend_from_slice(&instruction.to_le_bytes());
+        });
+        data
     }
 }
 
@@ -159,6 +194,8 @@ pub enum Token {
     // instructions
     #[token("ld:")]
     Load,
+    #[token("add")]
+    Add,
 
     // logos error
     #[error]
@@ -195,6 +232,7 @@ impl Token {
             Self::DecimalLiteral(_) => "dec lit".to_owned(),
             // instructions
             Self::Load => "ld:".to_owned(),
+            Self::Add => "add".to_owned(),
             // errors
             Self::Error => "ERR".to_owned(),
         }

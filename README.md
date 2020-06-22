@@ -29,14 +29,15 @@ god oh fuck what am i even doing
 
 ### instructions
 
-##### load - ld:signifier
+##### load - `ld:signifier $dest immediate/address`
 
-can be vram/cram/imed
+| opcode  | signifier | destination | padding | immediate/address  |
+| ------- | --------- | ----------- | ------- | ------------------ |
+| `00001` | `100`     | `0000`      | `0000`  | `0000000000000000` |
 
-- immediate `ld:immd $dest immediate`
+##### add - `add $src1 $src2 $dest`
 
-  | opcode  | signifier | destination | padding | immediate          |
-  | ------- | --------- | ----------- | ------- | ------------------ |
-  | `00001` | `100`     | `0000`      | `0000`  | `0000000000000000` |
+| opcode  | padding           | source1 | source2 | dest   |
+| ------- | ----------------- | ------- | ------- | ------ |
+| `00010` | `000000000000000` | `0000`  | `0000`  | `0000` |
 
-  

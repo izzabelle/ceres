@@ -19,7 +19,8 @@ fn wrapper() -> Result<()> {
     let data = std::fs::read_to_string("test.asm").unwrap();
     let mut assembler = ceres_asm::Assembler::new(&data);
     let asm = assembler.assemble().unwrap();
-    asm.iter().for_each(|instruction| println!("ob{:032b}", instruction));
+    asm.0.iter().for_each(|instruction| println!("0b{:032b}", instruction));
+    asm.write_to_file(None).unwrap();
 
     /*
     // create a new graphics context
